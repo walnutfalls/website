@@ -18,7 +18,7 @@ const SubtitleClasses = classNames([
 
 
 const Hero: React.FC<Props> = ({ }) => {
-    return <Section className='bg-slate-200 flex flex-col items-center'>
+    return <Section className='bg-slate-200 flex flex-col items-center pt-16'>
         <div className={TitleClasses}>SAVELIY BARANOV</div>
         <div className={SubtitleClasses}>GAMES | WEB | ANDROID</div>
     </Section>
