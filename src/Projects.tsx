@@ -6,8 +6,8 @@ interface Props {
 }
 
 const Projects: React.FC<Props> = ({ }) => {
-    return <Section className='bg-slate-800'>
-        Projects
+    return <Section className='bg-stone-200 p-16 snap-center'>
+        <h1 className='text-5xl block mb-8'>Projects</h1>
     </Section>
 };
 

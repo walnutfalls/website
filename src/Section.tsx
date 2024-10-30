@@ -1,20 +1,27 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import classNames from 'classnames';
+import { useIntersectionObserver } from './useIntersectionObserver';
 
 interface Props {
     children?: ReactNode;
     className?: string;
+    intersectCallback?: (isIntersectin: boolean, entry: IntersectionObserverEntry | undefined) => void;
 }
 
 const classes: string[] = [
-    'h-screen',
+    'min-h-screen',
     'w-full'
 ]
 
-const Section: React.FC<Props> = ({ children, className }) => {
+const Section: React.FC<Props> = ({ children, className, intersectCallback }) => {
     const finalClassname = useMemo(() => classNames(className, classes), [className]);
 
-    return <section className={classNames(finalClassname)}>{children}</section>;
+    const { isIntersecting, ref, entry } = useIntersectionObserver({
+        threshold: 0.5,
+        onChange: intersectCallback
+    })
+
+    return <section ref={ref} className={classNames(finalClassname)}>{children}</section>;
 };
 
 export default Section;

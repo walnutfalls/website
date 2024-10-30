@@ -3,24 +3,30 @@ import About from './About'
 import Demos from './Demos'
 import Projects from './Projects'
 
-import { useEffect, useState } from 'react'
+
+import { useRef, useState } from 'react'
+import { useAppContext } from './AppContext'
+
 
 function App() {
-  const [hideRest, setHeroLoaded] = useState<string>('hidden')
+  const [showRest, setShowRest] = useState<boolean>(false)
 
-  useEffect(() => {
-    setTimeout(() => setHeroLoaded(''), 4000)
-  })
+  const rootRef = useRef<HTMLDivElement>(null)
 
-  return <>
-    <Hero />
-    <div className={hideRest}>
-      <About />
-      <Demos />
-      <Projects />
-    </div>
+  const { scrollEnabled } = useAppContext()
 
-  </>
+  return <div ref={rootRef} className='snap-y h-screen w-screen snap-mandatory overflow-y-scroll'>
+    <Hero onLoaded={() => setShowRest(true)} />
+    {showRest &&
+      <>
+        <About rootRef={rootRef} />
+
+        {scrollEnabled ? <>
+          <Demos />
+          <Projects />
+        </> : null}
+      </>}
+  </div>
 }
 
 export default App
