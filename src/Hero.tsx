@@ -107,7 +107,6 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
         
     }, [canvasContainerRef, canvasRef])
 
-
     const {scrollEnabled} = useAppContext()
     const cls = classNames('relative h-screen snap-center', {'hidden': !scrollEnabled})
 

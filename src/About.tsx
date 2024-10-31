@@ -11,10 +11,11 @@ import dotnetLogo from './assets/dotnet.svg'
 import unityLogo from './assets/unity.svg'
 import reactLogo from './assets/react.svg'
 import kotlinLogo from './assets/kotlin.svg'
+import tailwindLogo from './assets/tailwindcss.svg'
+
+import cmakeLogo from './assets/cmake.svg'
 import Paragraph from './Paragraph';
 import Pong from './Pong';
-
-import { useIntersectionObserver } from './useIntersectionObserver';
 import { PongState, useAppContext } from './AppContext';
 
 interface Props {
@@ -39,13 +40,15 @@ const About: React.FC<Props> = ({ rootRef }) => {
                     Welcome to my page! I'm a software engineer with a focus on web, games and computer graphics. I like these <FontAwesomeIcon icon={faHeart} />:
                 </Paragraph>
                 
-                <div className='flex flex-row justify-center align-center gap-x-3 py-16'>
+                <div className='flex flex-row justify-center align-center gap-x-3 pb-8'>                    
                     <img src={reactLogo} className="2xl:w-24" alt="React logo" />
+                    <img src={tailwindLogo} className="2xl:w-24" alt="Tailwindcss logo" />
                     <img src={viteLogo} className="w-24" alt="Vite logo" />
                     <img src={webpackLogo} className="w-24 object-scale-down" alt="Webpack logo" />                    
                     <img src={dotnetLogo} className="w-24 object-scale-down" alt="Dotnet logo" />
                     <img src={kotlinLogo} className="w-24 object-scale-down" alt="Kotlin logo" />
-                    <img src={unityLogo} className="w-24 object-scale-down" alt="Unity logo" />                    
+                    <img src={unityLogo} className="w-24 object-scale-down" alt="Unity logo" />
+                    <img src={cmakeLogo} className="w-24 object-scale-down" alt="Cmake logo" />
                 </div>
             </article>
 

@@ -1,7 +1,7 @@
 import Hero from './Hero'
 import About from './About'
 import Demos from './Demos'
-import Projects from './Projects'
+import Projects from './Contact'
 
 
 import { useRef, useState } from 'react'

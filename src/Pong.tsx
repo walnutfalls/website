@@ -11,10 +11,7 @@ interface Props {
     rootRef: React.RefObject<HTMLDivElement>
 }
 
-
-
 let game = new Game()
-
 
 
 const Pong: React.FC<Props> = ({ className, rootRef }) => {
@@ -24,6 +21,7 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
     const {pongState, setPongState, setScrollEnabled} = useAppContext()
 
     const [lastState, setLastState] = useState<PongState>(pongState)
+    const [lastTouchY, setLastTouchY] = useState(0)
 
     const resize = (entries: ResizeObserverEntry[]) => {
         const cv = canvasRef?.current;
@@ -48,9 +46,18 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
         }
     }, [setScrollEnabled])
 
+    const handleTouchMove = (event: TouchEvent) => {
+        var y = event.touches[0].clientY
+        var yDiff = lastTouchY - y
+        setLastTouchY(y)
+        game.wheelDelta = yDiff
+    }
+
     use2dEffect(canvasRef, (ctx2d: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         if (pongState == PongState.InGame && pongState != lastState) {
             rootRef.current?.addEventListener('wheel', wheel)
+            document.addEventListener('touchmove', handleTouchMove, false);
+
             setScrollEnabled(false)
 
             game.run(canvas, () => {
@@ -59,6 +66,7 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
             })
         } else {
             rootRef.current?.removeEventListener('wheel', wheel)
+            document.removeEventListener('touchmove', handleTouchMove, false);
             setScrollEnabled(true)            
         }
 

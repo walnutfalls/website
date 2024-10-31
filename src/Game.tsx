@@ -1,10 +1,11 @@
-import { PongState } from "./AppContext"
 import { AABB, Circle, testCircleAABB, Vector2 } from "./physics"
+
+const MIN_X_VEL = 0.5
 
 export class GameState{
     paddle:AABB = new AABB(new Vector2(0, 0), new Vector2(32, 128))
     ball: AABB = new AABB(new Vector2(0, 0), new Vector2(32, 32))
-    ballV: Vector2 = new Vector2(0.25, 0.25) 
+    ballV: Vector2 = new Vector2(0.25, 0.05) 
     bV: Vector2 = new Vector2()
 
     aPos: Vector2
@@ -89,14 +90,17 @@ export class Game {
     ai() {
         const ballCenter = this.state.ballPos.y + this.state.ball.halfH()
         const bCenter = this.state.bPos.y + this.state.paddle.halfH()
+        const diff = ballCenter - bCenter
+        const mag = Math.abs(diff)
 
-        this.state.bV = new Vector2(
-            0,
-            Math.sign(ballCenter - bCenter) * 0.1
-        );
+        if (mag > 1) {
+            this.state.bV = new Vector2(0, 0.001 * diff);
+        }
     }
 
     physics(dt: number) {
+        this.state.ballV = this.state.ballV.mul(1 + (dt * .0001))
+
         this.state.ballPos = this.state.ballPos.add(this.state.ballV.mul(dt))
         this.state.bPos = this.state.bPos.add(this.state.bV.mul(dt))
 
@@ -105,7 +109,7 @@ export class Game {
             radius: this.state.ball.width()/2 
         }
 
-        const maxDeflect = Math.PI / 6
+        const maxDeflect = Math.PI / 10
 
         {
             const aabb = this.state.paddle.translate(this.state.aPos)            
@@ -117,8 +121,8 @@ export class Game {
                 let angle = deflect * maxDeflect
                 this.state.ballV = this.state.ballV.rotate(angle)
 
-                if (this.state.ballV.x <= 0.2) {
-                    this.state.ballV.x = 0.2
+                if (this.state.ballV.x <= MIN_X_VEL) {
+                    this.state.ballV.x = MIN_X_VEL
                 }
             }
         }        
@@ -133,8 +137,8 @@ export class Game {
                 let angle = deflect * maxDeflect
                 this.state.ballV =this.state.ballV.rotate(-angle)
 
-                if (this.state.ballV.x >= -0.2) {
-                    this.state.ballV.x = -0.2
+                if (this.state.ballV.x >= -MIN_X_VEL) {
+                    this.state.ballV.x = -MIN_X_VEL
                 }
             }
         }
