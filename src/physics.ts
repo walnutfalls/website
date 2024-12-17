@@ -43,6 +43,16 @@ export class Vector2 {
         return this.x * other.x + this.y * other.y
     }
 
+    len() {
+        return Math.sqrt(this.x*this.x + this.y*this.y)
+    }
+
+    normalize() {
+        const L = this.len()
+        this.x /= L
+        this.y /= L
+    }
+
     rotate(radians: number) {
         if (radians < 0) {
             radians = 2 * Math.PI + radians 

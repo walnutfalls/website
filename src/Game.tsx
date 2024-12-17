@@ -5,12 +5,12 @@ const MIN_X_VEL = 0.5
 export class GameState{
     paddle:AABB = new AABB(new Vector2(0, 0), new Vector2(32, 128))
     ball: AABB = new AABB(new Vector2(0, 0), new Vector2(32, 32))
-    ballV: Vector2 = new Vector2(0.25, 0.05) 
+    ballV: Vector2 = new Vector2(0.5, 0.05) 
     bV: Vector2 = new Vector2()
 
     aPos: Vector2
-    bPos: Vector2    
-    ballPos: Vector2    
+    bPos: Vector2
+    ballPos: Vector2
     
     constructor(width: number, height: number, padding: number) {
         const aX = padding
@@ -33,6 +33,10 @@ export class Game {
     wheelDelta: number = 0
     done: boolean = false
     canvas: HTMLCanvasElement | null = null
+
+    accumulateWheelDelta(val: number) {
+        this.wheelDelta += val
+    }
 
     onGameEnd: () => void = () => {}    
 
@@ -58,7 +62,7 @@ export class Game {
             this.oobCheck()
         }        
 
-        this.input()
+        this.input(deltaTime)
         this.ai()
         
         this.render()
@@ -109,16 +113,19 @@ export class Game {
             radius: this.state.ball.width()/2 
         }
 
-        const maxDeflect = Math.PI / 10
+        const maxDeflect = Math.PI / 4
 
         {
             const aabb = this.state.paddle.translate(this.state.aPos)            
             const {isColliding} = testCircleAABB(c, aabb)
             if (isColliding) {
                 this.state.ballV.x *= -1;
+                
                 const boxY = aabb.center().y                
+                
                 let deflect = (c.center.y - boxY) / (this.state.paddle.halfH())
                 let angle = deflect * maxDeflect
+
                 this.state.ballV = this.state.ballV.rotate(angle)
 
                 if (this.state.ballV.x <= MIN_X_VEL) {
@@ -132,10 +139,11 @@ export class Game {
             const {isColliding} = testCircleAABB(c, aabb)
             if (isColliding) {
                 this.state.ballV.x *= -1;
+
                 const boxY = aabb.center().y                
                 let deflect = (c.center.y - boxY) / (this.state.paddle.halfH())
                 let angle = deflect * maxDeflect
-                this.state.ballV =this.state.ballV.rotate(-angle)
+                this.state.ballV = this.state.ballV.rotate(-angle)
 
                 if (this.state.ballV.x >= -MIN_X_VEL) {
                     this.state.ballV.x = -MIN_X_VEL
@@ -144,7 +152,7 @@ export class Game {
         }
     }
 
-    input() {
+    input(dt: number) {
         if (this.canvas == null) return
 
         this.state.aPos.y += this.canvas.height * this.wheelDelta / 2000

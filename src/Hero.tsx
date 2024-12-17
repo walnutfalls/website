@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Section from './Section';
 import classNames from 'classnames';
 import { useRef } from 'react';
@@ -31,7 +31,7 @@ const TopHeroClassesStart = 'transition duration-500 bg-slate-100 flex-grow w-fu
 const TopHeroClassesEnd = 'transition duration-500 bg-gradient-to-b from-slate-300/0 to-slate-100/50 flex-grow w-full';
 
 const MiddleClassesStart = 'transition duration-500 flex flex-col items-center bg-slate-100 w-full py-8'
-const MiddleClassesEnd = 'transition duration-500 flex flex-col items-center bg-slate-100/50 w-full py-8'
+const MiddleClassesEnd = 'transition duration-500 flex flex-col items-center bg-slate-100/50 w-full py-8 text-slate-950/25'
 
 const EndClassesStart = 'transition duration-500 bg-slate-100 flex-grow w-full'
 const EndClassesEnd = 'transition duration-500 bg-gradient-to-b from-slate-100/50 to-slate-300/80 flex-grow w-full'
@@ -85,7 +85,7 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
     }
 
     useEffect(() => {
-        setName('SAVELIY BARANOV')
+        setName(atob('U0FWRUxJWSBCQVJBTk9WCg=='))
 
         window.addEventListener('resize', handleResize);
         
@@ -98,17 +98,20 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
         if (canvasRef?.current == null || canvasContainerRef?.current == null) {
             return;
         }
-
-        const box = canvasContainerRef.current.getBoundingClientRect();
-        canvasRef.current.width = box.width
-        canvasRef.current.height = box.height
         
         initGame(canvasRef.current!)
         
     }, [canvasContainerRef, canvasRef])
 
     const {scrollEnabled} = useAppContext()
+
     const cls = classNames('relative h-screen snap-center', {'hidden': !scrollEnabled})
+
+    const canvasStyle = useMemo(() => ({ 
+        width: canvasContainerRef?.current?.getBoundingClientRect().width,
+        height: canvasContainerRef?.current?.getBoundingClientRect().height,
+        backgroundColor: 'white' 
+    }), [canvasContainerRef?.current])
 
     return <Section className={cls}>
         <div className='relative h-full z-10 flex flex-col items-center'>
@@ -120,7 +123,7 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
             <div className={classes.end} />
         </div>
         <div ref={canvasContainerRef} className='absolute inset-0 w-full h-full'>
-            <canvas ref={canvasRef} id="unity-canvas" style={{ backgroundColor: 'white' }} />
+            <canvas ref={canvasRef} id="unity-canvas" style={canvasStyle} />
         </div>
     </Section>
 };

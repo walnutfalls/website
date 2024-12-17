@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRef } from 'react';
 import { use2dEffect } from './useGlEffect';
 import { PongState, useAppContext } from './AppContext';
@@ -14,6 +14,8 @@ interface Props {
 let game = new Game()
 
 
+let lastTouchY = 0
+
 const Pong: React.FC<Props> = ({ className, rootRef }) => {
     const canvasContainerRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -21,7 +23,7 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
     const {pongState, setPongState, setScrollEnabled} = useAppContext()
 
     const [lastState, setLastState] = useState<PongState>(pongState)
-    const [lastTouchY, setLastTouchY] = useState(0)
+    
 
     const resize = (entries: ResizeObserverEntry[]) => {
         const cv = canvasRef?.current;
@@ -48,16 +50,23 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
 
     const handleTouchMove = (event: TouchEvent) => {
         var y = event.touches[0].clientY
-        var yDiff = lastTouchY - y
-        setLastTouchY(y)
-        game.wheelDelta = yDiff
+        var yDiff = y - lastTouchY
+        lastTouchY = y
+        game.accumulateWheelDelta(yDiff * 4)
+    }
+
+    const touchBegin = (event: TouchEvent) => {
+        var y = event.touches[0].clientY
+        lastTouchY = y
     }
 
     use2dEffect(canvasRef, (ctx2d: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         if (pongState == PongState.InGame && pongState != lastState) {
             rootRef.current?.addEventListener('wheel', wheel)
-            document.addEventListener('touchmove', handleTouchMove, false);
-
+            
+            document.addEventListener("touchstart", touchBegin)
+            document.addEventListener('touchmove', handleTouchMove, false)            
+            document.body.style.overscrollBehavior = 'none'
             setScrollEnabled(false)
 
             game.run(canvas, () => {
@@ -66,7 +75,9 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
             })
         } else {
             rootRef.current?.removeEventListener('wheel', wheel)
-            document.removeEventListener('touchmove', handleTouchMove, false);
+            document.removeEventListener('touchmove', handleTouchMove, false)
+            document.removeEventListener("touchstart", touchBegin)
+            document.body.style.overscrollBehavior = 'auto'
             setScrollEnabled(true)            
         }
 
@@ -79,8 +90,14 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
     }, [canvasContainerRef?.current])
 
 
+    const canvasStyle = useMemo(() => ({ 
+        backgroundColor: '#000000',
+        width: canvasContainerRef?.current?.getBoundingClientRect().width,
+        height: canvasContainerRef?.current?.getBoundingClientRect().height,
+    }), [canvasContainerRef?.current])
+
     return <div onClick={onClick} className={classNames(className, 'overflow-hidden')} ref={canvasContainerRef}>
-        <canvas ref={canvasRef} style={{ backgroundColor: '#000000' }} />
+        <canvas ref={canvasRef} style={canvasStyle} />
     </div>
 };
 

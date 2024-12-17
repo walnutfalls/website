@@ -1,7 +1,7 @@
 import Hero from './Hero'
 import About from './About'
 import Demos from './Demos'
-import Projects from './Contact'
+
 
 
 import { useRef, useState } from 'react'
@@ -22,8 +22,7 @@ function App() {
         <About rootRef={rootRef} />
 
         {scrollEnabled ? <>
-          <Demos />
-          <Projects />
+          <Demos />          
         </> : null}
       </>}
   </div>
