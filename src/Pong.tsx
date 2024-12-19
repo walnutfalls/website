@@ -60,7 +60,7 @@ const Pong: React.FC<Props> = ({ className, rootRef }) => {
         lastTouchY = y
     }
 
-    use2dEffect(canvasRef, (ctx2d: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    use2dEffect(canvasRef, (_ctx2d: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         if (pongState == PongState.InGame && pongState != lastState) {
             rootRef.current?.addEventListener('wheel', wheel)
             

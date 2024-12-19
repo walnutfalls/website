@@ -25,7 +25,7 @@ interface Props {
 const About: React.FC<Props> = ({ rootRef }) => {
     const {pongState, setPongState} = useAppContext()
 
-    const onIntersect = (intersecting: boolean, entry: IntersectionObserverEntry | undefined) => {
+    const onIntersect = (intersecting: boolean) => {
         if (!intersecting) return
 
         if (pongState == PongState.Initial)

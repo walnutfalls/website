@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import classNames from 'classnames';
 import { useIntersectionObserver } from './useIntersectionObserver';
 
@@ -16,7 +16,7 @@ const classes: string[] = [
 const Section: React.FC<Props> = ({ children, className, intersectCallback }) => {
     const finalClassname = useMemo(() => classNames(className, classes), [className]);
 
-    const { isIntersecting, ref, entry } = useIntersectionObserver({
+    const { ref } = useIntersectionObserver({
         threshold: 0.5,
         onChange: intersectCallback
     })

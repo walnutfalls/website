@@ -62,7 +62,7 @@ export class Game {
             this.oobCheck()
         }        
 
-        this.input(deltaTime)
+        this.input()
         this.ai()
         
         this.render()
@@ -152,7 +152,7 @@ export class Game {
         }
     }
 
-    input(dt: number) {
+    input() {
         if (this.canvas == null) return
 
         this.state.aPos.y += this.canvas.height * this.wheelDelta / 2000

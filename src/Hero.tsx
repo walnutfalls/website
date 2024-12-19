@@ -14,17 +14,9 @@ const TitleClasses = classNames([
     '2xl:text-9xl'
 ])
 
-const SubtitleClasses = classNames([
-    'text-base',
-    '2xl:text-xl'
-])
-
-
 
 let once = false
 let unityInstance:any = null
-
-
 
 
 const TopHeroClassesStart = 'transition duration-500 bg-slate-100 flex-grow w-full';
