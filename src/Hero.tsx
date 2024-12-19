@@ -118,6 +118,7 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
             <div className={classes.top} />
             <div className={classes.middle}>
                 <div className={TitleClasses}>{name}</div>
+                <span className='text-xl'>GAMES|WEB|ANDROID</span>
                 <ProgressBar progress={progress} className='w-96' invisible={progress >= 1} />                
             </div>
             <div className={classes.end} />
