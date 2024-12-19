@@ -44,7 +44,6 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
 
     const [progress, setProgress] = useState<number>(0)
     const [name, setName] = useState('')
-    const [subtitle, setSubtitle] = useState('')
 
     // Function to handle resize
     const handleResize = () => {        
