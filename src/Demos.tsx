@@ -47,7 +47,7 @@ const Item: React.FC<ItemProps> = ({ children, selected, title, onClick }) => {
     </div>
 }
 
-const GithubHref: React.FC<LinkProps> = ({children, href}) => <a className={HrefClasses} href={href}>
+const GithubHref: React.FC<LinkProps> = ({children, href}) => <a target='_blank' className={HrefClasses} href={href}>
     <FontAwesomeIcon className={Logo} icon={faGithub} />{children}
 </a>
 
