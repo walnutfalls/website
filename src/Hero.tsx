@@ -16,7 +16,7 @@ const TitleClasses = classNames([
 
 
 let once = false
-let unityInstance:any = null
+let unityInstance: any = null
 
 
 const TopHeroClassesStart = 'transition duration-500 bg-slate-100 flex-grow w-full';
@@ -32,31 +32,42 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
     const canvasContainerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const [classes, setClasses] = useState({top: TopHeroClassesStart, middle: MiddleClassesStart, end: EndClassesStart})
+    const [classes, setClasses] = useState({ top: TopHeroClassesStart, middle: MiddleClassesStart, end: EndClassesStart })
 
     const [progress, setProgress] = useState<number>(0)
     const [name, setName] = useState('')
 
-    
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
 
     // Function to handle resize
-    const handleResize = () => {        
+    const handleResize = () => {
         if (canvasContainerRef?.current == null || unityInstance == null || mobileOrTabletCheck()) {
             return;
         }
 
         const box = canvasContainerRef.current.getBoundingClientRect();
-        unityInstance.Module.setCanvasSize(box.width, box.height)
+        setDimensions({ width: box.width, height: box.height })
     };
 
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            canvas.width = dimensions.width;
+            canvas.height = dimensions.height;
+        }
+        
+        unityInstance?.Module.setCanvasSize(dimensions.width, dimensions.height)
+    }, [dimensions]);
+
     const onIntersect = (intersecting: boolean) => {
-        if (intersecting && mobileOrTabletCheck()) 
+        if (intersecting && mobileOrTabletCheck())
             handleResize()
     }
 
 
     function initGame(element: HTMLCanvasElement) {
-        if (once) return;    
+        if (once) return;
         once = true;
 
         const config: UnityConfig = {
@@ -70,11 +81,11 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
             // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
             // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
         };
-    
+
         createUnityInstance(element, config, (progress) => {
             setProgress(progress - 0.1)
         }).then(i => {
-            setClasses({top: TopHeroClassesEnd, middle: MiddleClassesEnd, end: EndClassesEnd})
+            setClasses({ top: TopHeroClassesEnd, middle: MiddleClassesEnd, end: EndClassesEnd })
             unityInstance = i
             onLoaded()
 
@@ -86,7 +97,7 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
         setName(atob('U0FWRUxJWSBCQVJBTk9WCg=='))
 
         window.addEventListener('resize', handleResize);
-        
+
         return () => {
             window.removeEventListener('resize', handleResize);
         };
@@ -96,17 +107,17 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
         if (canvasRef?.current == null || canvasContainerRef?.current == null) {
             return;
         }
-        
+
         initGame(canvasRef.current!)
-        
+
     }, [canvasContainerRef, canvasRef])
 
     const cls = classNames('relative h-screen snap-center')
 
-    const canvasStyle = useMemo(() => ({ 
+    const canvasStyle = useMemo(() => ({
         width: canvasContainerRef?.current?.getBoundingClientRect().width,
         height: canvasContainerRef?.current?.getBoundingClientRect().height,
-        backgroundColor: 'white' 
+        backgroundColor: 'white'
     }), [canvasContainerRef?.current])
 
     return <Section intersectCallback={onIntersect} className={cls}>
@@ -115,7 +126,7 @@ const Hero: React.FC<Props> = ({ onLoaded }) => {
             <div className={classes.middle}>
                 <div className={TitleClasses}>{name}</div>
                 <span className='text-xl'>GAMES|WEB|ANDROID</span>
-                <ProgressBar progress={progress} className='w-96' invisible={progress >= 1} />                
+                <ProgressBar progress={progress} className='w-96' invisible={progress >= 1} />
             </div>
             <div className={classes.end} />
         </div>
